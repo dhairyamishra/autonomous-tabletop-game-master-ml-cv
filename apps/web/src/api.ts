@@ -72,6 +72,17 @@ export const validateAction = (payload: Record<string, unknown>) =>
 export const calibrateCamera = (sessionId: string, gameId: string) =>
   api.post("/vision/calibrate", { session_id: sessionId, game_id: gameId }).then(r => r.data);
 
+export const observeFrame = (gameId: string, sessionId: string, frame: Blob) => {
+  const form = new FormData();
+  form.append("frame", frame);
+  return api.post(`/vision/observe-frame?game_id=${encodeURIComponent(gameId)}&session_id=${encodeURIComponent(sessionId)}`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  }).then(r => r.data);
+};
+
+export const proposeReconciliation = (gameId: string, sessionId: string, observationId: string) =>
+  api.post(`/vision/reconcile/propose?game_id=${encodeURIComponent(gameId)}&session_id=${encodeURIComponent(sessionId)}&observation_id=${encodeURIComponent(observationId)}`).then(r => r.data);
+
 // WebSocket
 export const createWebSocket = (gameId: string, sessionId: string): WebSocket => {
   const wsBase = BASE_URL.replace(/^http/, "ws");

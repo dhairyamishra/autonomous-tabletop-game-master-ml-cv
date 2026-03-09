@@ -7,6 +7,73 @@ body {
 }
 button { cursor: pointer; }
 input, select { box-sizing: border-box; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0d1117; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+/* Board feed wrapper — HARDCODED 500x500 */
+.board-feed-wrapper {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #2a2a3e;
+  box-shadow:
+    0 0 20px rgba(0, 184, 148, 0.08),
+    0 0 60px rgba(0, 184, 148, 0.03);
+}
+.board-feed-wrapper:hover {
+  box-shadow:
+    0 0 24px rgba(0, 184, 148, 0.14),
+    0 0 80px rgba(0, 184, 148, 0.06);
+}
+
+/* Correction toggle button in sidebars */
+.correction-toggle {
+  width: 100%;
+  padding: 5px 10px;
+  background: #2a2a3e;
+  color: #888;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.correction-toggle:hover {
+  background: #6c5ce7;
+  color: #fff;
+  border-color: #6c5ce7;
+}
+
+/* Correction drawer */
+.correction-drawer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  background: #111827;
+  border-top: 1px solid #1a1a2e;
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+.correction-drawer.open {
+  max-height: 300px;
+  padding: 10px 12px;
+}
+
+/* Zone row hover */
+.zone-row:hover {
+  border-color: #3a3a5e !important;
+  background: #1e1e38 !important;
+}
+
+/* Primary action button glow */
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.15);
+  box-shadow: 0 0 12px rgba(230, 126, 34, 0.3);
+}

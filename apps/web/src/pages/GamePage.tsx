@@ -10,15 +10,29 @@ import CorrectionPanel from "../components/CorrectionPanel";
 import BotPanel from "../components/BotPanel";
 import PhaseControls from "../components/PhaseControls";
 import EventLog from "../components/EventLog";
+import BoardFeed from "../components/BoardFeed";
+import CombatPrediction from "../components/CombatPrediction";
+import type { Player } from "../types";
+
+const AXIS_PLAYERS: Player[] = ["japan"];
 
 export default function GamePage() {
-  const { session, gameState, setGameState, wsConnected } = useAppStore();
+  const {
+    session,
+    gameState,
+    setGameState,
+    wsConnected,
+    latestObservation,
+    correctionDrawerOpen,
+    setCorrectionDrawerOpen,
+    botSuggestions,
+  } = useAppStore();
 
   const refresh = useCallback(() => {
     if (session?.game_id) {
       getGameState(session.game_id).then(setGameState).catch(console.error);
     }
-  }, [session?.game_id]);
+  }, [session?.game_id, setGameState]);
 
   useEffect(() => {
     refresh();
@@ -28,51 +42,128 @@ export default function GamePage() {
 
   if (!session || !gameState) {
     return (
-      <div style={{ color: "#fff", padding: 32 }}>
+      <div style={{
+        color: "#888",
+        padding: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        background: "#0d1117",
+        fontSize: 14,
+      }}>
         Loading game state...
       </div>
     );
   }
 
-  return (
-    <div style={{ background: "#0d1117", minHeight: "100vh", color: "#fff", fontFamily: "system-ui, sans-serif" }}>
-      {/* Top bar */}
-      <PhaseBar
-        player={gameState.turn.current_player}
-        phase={gameState.turn.phase}
-        round={gameState.turn.round}
-      />
+  const currentPlayer = gameState.turn.current_player;
+  const isAxisTurn = AXIS_PLAYERS.includes(currentPlayer);
+  const pendingBattleCount = Object.values(gameState.pending_battles).filter(
+    (b) => b.status === "pending" || b.status === "in_progress"
+  ).length;
 
-      <div style={{ display: "flex", gap: 0, height: "calc(100vh - 50px)" }}>
-        {/* LEFT — Camera + Zones */}
-        <div style={{ width: 280, borderRight: "1px solid #222", padding: 10, display: "flex", flexDirection: "column", gap: 8, overflowY: "auto" }}>
-          <CameraFeedPlaceholder />
-          <ZonePanel gameState={gameState} />
+  const latestSimulation = botSuggestions.length > 0
+    ? botSuggestions[0].simulation_summary ?? null
+    : null;
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "row",
+      width: "100vw",
+      height: "100vh",
+      overflow: "hidden",
+      background: "#0d1117",
+      color: "#fff",
+      fontFamily: "system-ui, -apple-system, sans-serif",
+    }}>
+
+      {/* LEFT SIDEBAR — 25vw */}
+      <div style={{
+        width: "25vw",
+        height: "100vh",
+        overflowY: "auto",
+        borderRight: "2px solid #1a1a2e",
+        padding: 8,
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+      }}>
+        <SidebarHeader label="Japan" color="#c0392b" active={isAxisTurn} />
+        <EconomyPanel economy={gameState.economy} currentPlayer={currentPlayer} side="axis" />
+        {isAxisTurn && (
+          <>
+            <PhaseControls
+              gameState={gameState}
+              sessionId={session.session_id}
+              onAdvanced={refresh}
+            />
+            <BattlePanel
+              gameState={gameState}
+              sessionId={session.session_id}
+              onResolved={refresh}
+            />
+            <CombatPrediction
+              gameState={gameState}
+              simulationSummary={latestSimulation}
+            />
+            <BotPanel gameState={gameState} />
+            <button
+              onClick={() => setCorrectionDrawerOpen(!correctionDrawerOpen)}
+              className="correction-toggle"
+            >
+              {correctionDrawerOpen ? "Close Corrections" : "Corrections"}
+            </button>
+          </>
+        )}
+        <ZonePanel gameState={gameState} factionFilter="axis" />
+      </div>
+
+      {/* CENTER — 50vw */}
+      <div style={{
+        width: "50vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}>
+
+        {/* TOP BAR — 5vh */}
+        <div style={{ height: "5vh", flexShrink: 0 }}>
+          <PhaseBar
+            player={gameState.turn.current_player}
+            phase={gameState.turn.phase}
+            round={gameState.turn.round}
+            stateVersion={gameState.audit.state_version}
+            wsConnected={wsConnected}
+            victoryStatus={gameState.victory_status}
+            pendingBattleCount={pendingBattleCount}
+          />
         </div>
 
-        {/* CENTER — State + Controls */}
-        <div style={{ flex: 1, padding: 10, display: "flex", flexDirection: "column", gap: 8, overflowY: "auto" }}>
-          <StatusBanner gameState={gameState} wsConnected={wsConnected} />
-          <PhaseControls
-            gameState={gameState}
-            sessionId={session.session_id}
-            onAdvanced={refresh}
+        {/* VIDEO FEED — 500x500 centered, no growing */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 8,
+          flexShrink: 0,
+        }}>
+          <BoardFeed
+            observation={latestObservation}
+            isCalibrated={latestObservation?.is_calibrated ?? false}
+            wsConnected={wsConnected}
           />
-          <BattlePanel
-            gameState={gameState}
-            sessionId={session.session_id}
-            onResolved={refresh}
-          />
-          <EconomyPanel
-            economy={gameState.economy}
-            currentPlayer={gameState.turn.current_player}
-          />
+        </div>
+
+        {/* BOTTOM BAR — remaining space */}
+        <div style={{ flex: 1, minHeight: 0, overflow: "hidden", padding: "0 8px 8px" }}>
           <EventLog gameId={gameState.game_id} />
         </div>
 
-        {/* RIGHT — Bot + Correction */}
-        <div style={{ width: 300, borderLeft: "1px solid #222", padding: 10, display: "flex", flexDirection: "column", gap: 8, overflowY: "auto" }}>
-          <BotPanel gameState={gameState} />
+        {/* Correction drawer */}
+        <div className={`correction-drawer ${correctionDrawerOpen ? "open" : ""}`}>
           <CorrectionPanel
             gameState={gameState}
             sessionId={session.session_id}
@@ -80,53 +171,89 @@ export default function GamePage() {
           />
         </div>
       </div>
+
+      {/* RIGHT SIDEBAR — 25vw */}
+      <div style={{
+        width: "25vw",
+        height: "100vh",
+        overflowY: "auto",
+        borderLeft: "2px solid #1a1a2e",
+        padding: 8,
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+      }}>
+        <SidebarHeader label="Allies" color="#2980b9" active={!isAxisTurn} />
+        <EconomyPanel economy={gameState.economy} currentPlayer={currentPlayer} side="allies" />
+        {!isAxisTurn && (
+          <>
+            <PhaseControls
+              gameState={gameState}
+              sessionId={session.session_id}
+              onAdvanced={refresh}
+            />
+            <BattlePanel
+              gameState={gameState}
+              sessionId={session.session_id}
+              onResolved={refresh}
+            />
+            <CombatPrediction
+              gameState={gameState}
+              simulationSummary={latestSimulation}
+            />
+            <BotPanel gameState={gameState} />
+            <button
+              onClick={() => setCorrectionDrawerOpen(!correctionDrawerOpen)}
+              className="correction-toggle"
+            >
+              {correctionDrawerOpen ? "Close Corrections" : "Corrections"}
+            </button>
+          </>
+        )}
+        <ZonePanel gameState={gameState} factionFilter="allies" />
+      </div>
+
     </div>
   );
 }
 
-function CameraFeedPlaceholder() {
+function SidebarHeader({ label, color, active }: { label: string; color: string; active: boolean }) {
   return (
     <div style={{
-      background: "#1a1a2e",
-      borderRadius: 8,
-      padding: 12,
-      height: 180,
       display: "flex",
-      flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center",
-      border: "1px dashed #444",
+      gap: 8,
+      padding: "4px 2px",
+      flexShrink: 0,
     }}>
-      <div style={{ color: "#555", fontSize: 12 }}>📷 Camera feed</div>
-      <div style={{ color: "#444", fontSize: 10, marginTop: 4 }}>
-        Vision module connects here
-      </div>
-    </div>
-  );
-}
-
-function StatusBanner({ gameState, wsConnected }: { gameState: import("../types").GameState; wsConnected: boolean }) {
-  const hasBattles = Object.values(gameState.pending_battles).some(
-    (b) => b.status === "pending" || b.status === "in_progress"
-  );
-
-  return (
-    <div style={{ background: "#16213e", borderRadius: 8, padding: 10, display: "flex", gap: 12, alignItems: "center" }}>
-      <div>
-        <span style={{ color: "#888", fontSize: 11 }}>State v{gameState.audit.state_version}</span>
-        <span style={{ marginLeft: 8, color: "#888", fontSize: 11 }}>
-          {wsConnected ? "🟢 Live" : "🔴 Disconnected"}
+      <div style={{
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        background: active ? color : "#333",
+        boxShadow: active ? `0 0 8px ${color}` : "none",
+        transition: "all 0.3s",
+      }} />
+      <span style={{
+        fontWeight: 700,
+        fontSize: 12,
+        color: active ? color : "#555",
+        textTransform: "uppercase",
+        letterSpacing: 1,
+        transition: "color 0.3s",
+      }}>
+        {label}
+      </span>
+      {active && (
+        <span style={{
+          fontSize: 9,
+          color: "#888",
+          background: "#2a2a3e",
+          padding: "1px 6px",
+          borderRadius: 3,
+        }}>
+          ACTIVE
         </span>
-      </div>
-      {hasBattles && (
-        <div style={{ color: "#e17055", fontSize: 12, fontWeight: 600 }}>
-          ⚔ {Object.values(gameState.pending_battles).filter((b) => b.status === "pending" || b.status === "in_progress").length} battle(s) pending
-        </div>
-      )}
-      {gameState.victory_status !== "in_progress" && (
-        <div style={{ color: "#f0c040", fontWeight: 700, fontSize: 14 }}>
-          🏆 {gameState.victory_status === "japan_wins" ? "Japan wins!" : "Allies win!"}
-        </div>
       )}
     </div>
   );
