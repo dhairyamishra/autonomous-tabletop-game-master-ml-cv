@@ -1,0 +1,440 @@
+{
+  "scenario": "ww2_pacific_1940_2nd_edition",
+  "version": "1.0.0",
+  "description": "Canonical map geometry for WW2 Pacific 1940 Second Edition. Territory data, IPC values, adjacency, and starting unit placements are derived from publicly available game rules and reference materials. Zone polygons are placeholders to be refined during calibration.",
+
+  "victory_cities": [
+    "japan", "manila", "hong_kong", "singapore", "calcutta", "honolulu",
+    "sydney", "shanghai", "midway"
+  ],
+  "japan_victory_threshold": 6,
+  "allies_hold_threshold": 4,
+
+  "unit_costs": {
+    "infantry": 3,
+    "artillery": 4,
+    "armor": 6,
+    "fighter": 10,
+    "bomber": 12,
+    "battleship": 20,
+    "carrier": 16,
+    "cruiser": 12,
+    "destroyer": 8,
+    "submarine": 6,
+    "transport": 7,
+    "industrial_complex": 15,
+    "antiaircraft_gun": 5
+  },
+
+  "unit_combat_values": {
+    "infantry":    { "attack": 1, "defense": 2, "movement": 1, "is_two_hit": false },
+    "artillery":   { "attack": 2, "defense": 2, "movement": 1, "is_two_hit": false },
+    "armor":       { "attack": 3, "defense": 3, "movement": 2, "is_two_hit": false },
+    "fighter":     { "attack": 3, "defense": 4, "movement": 4, "is_two_hit": false },
+    "bomber":      { "attack": 4, "defense": 1, "movement": 6, "is_two_hit": false },
+    "battleship":  { "attack": 4, "defense": 4, "movement": 2, "is_two_hit": true  },
+    "carrier":     { "attack": 1, "defense": 2, "movement": 2, "is_two_hit": false, "capacity": 2 },
+    "cruiser":     { "attack": 3, "defense": 3, "movement": 2, "is_two_hit": false },
+    "destroyer":   { "attack": 2, "defense": 2, "movement": 2, "is_two_hit": false },
+    "submarine":   { "attack": 2, "defense": 1, "movement": 2, "is_two_hit": false, "can_submerge": true },
+    "transport":   { "attack": 0, "defense": 0, "movement": 2, "is_two_hit": false, "capacity": 2 }
+  },
+
+  "territories": {
+    "japan": {
+      "type": "land", "ipc": 8, "owner": "japan",
+      "is_capital": true, "is_victory_city": true,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["sea_zone_6", "sea_zone_19", "sea_zone_59"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "manchuria": {
+      "type": "land", "ipc": 3, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["japan", "korea", "buryatia_s_s_r", "siberia", "yakut_s_s_r", "sea_zone_6"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "korea": {
+      "type": "land", "ipc": 2, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["manchuria", "japan", "sea_zone_6", "sea_zone_19"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "kiangsu": {
+      "type": "land", "ipc": 3, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["manchuria", "shansi", "hunan", "kwangtung", "sea_zone_20"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "shanghai": {
+      "type": "land", "ipc": 3, "owner": "japan",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["kiangsu"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "kwangtung": {
+      "type": "land", "ipc": 1, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["kiangsu", "yunnan", "french_indo_china_thailand", "sea_zone_20"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "hong_kong": {
+      "type": "land", "ipc": 1, "owner": "japan",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["kwangtung"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "french_indo_china_thailand": {
+      "type": "land", "ipc": 2, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["kwangtung", "yunnan", "malaya", "sea_zone_36"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "malaya": {
+      "type": "land", "ipc": 1, "owner": "uk_pacific",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["french_indo_china_thailand", "sea_zone_36", "sea_zone_37"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "singapore": {
+      "type": "land", "ipc": 3, "owner": "uk_pacific",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["malaya", "sea_zone_37"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "dutch_east_indies": {
+      "type": "land", "ipc": 4, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_41", "sea_zone_42", "sea_zone_43"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "borneo": {
+      "type": "land", "ipc": 3, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_37", "sea_zone_41"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "philippine_islands": {
+      "type": "land", "ipc": 3, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_35", "sea_zone_36"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "manila": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["philippine_islands"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "new_guinea": {
+      "type": "land", "ipc": 1, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_43", "sea_zone_44"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "solomon_islands": {
+      "type": "land", "ipc": 0, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_44", "sea_zone_54"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "new_south_wales": {
+      "type": "land", "ipc": 3, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["queensland", "sea_zone_54"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "queensland": {
+      "type": "land", "ipc": 0, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["new_south_wales", "northern_territory", "sea_zone_54"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "northern_territory": {
+      "type": "land", "ipc": 0, "owner": "anzac",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["queensland", "sea_zone_43"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "sydney": {
+      "type": "land", "ipc": 0, "owner": "anzac",
+      "is_capital": true, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["new_south_wales"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "calcutta": {
+      "type": "land", "ipc": 3, "owner": "uk_pacific",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["burma", "india", "sea_zone_39"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "burma": {
+      "type": "land", "ipc": 1, "owner": "uk_pacific",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["yunnan", "india", "malaya", "sea_zone_37"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "india": {
+      "type": "land", "ipc": 0, "owner": "uk_pacific",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["burma", "calcutta", "sea_zone_39"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "yunnan": {
+      "type": "land", "ipc": 0, "owner": "china",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["kwangtung", "kiangsu", "french_indo_china_thailand", "burma", "szechwan"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "szechwan": {
+      "type": "land", "ipc": 0, "owner": "china",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["yunnan", "shensi"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "shensi": {
+      "type": "land", "ipc": 0, "owner": "china",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["szechwan", "shansi", "suiyuyan"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "shansi": {
+      "type": "land", "ipc": 0, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["manchuria", "kiangsu", "shensi"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "suiyuyan": {
+      "type": "land", "ipc": 0, "owner": "china",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["shensi", "shansi", "manchuria"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "hawaii": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_26"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "honolulu": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["hawaii"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "midway": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": true,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_25"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "wake_island": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_25"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "guam": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_34"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "western_united_states": {
+      "type": "land", "ipc": 10, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": true,
+      "adjacent_territories": ["central_united_states", "alaska", "sea_zone_10"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "central_united_states": {
+      "type": "land", "ipc": 6, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["western_united_states"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "alaska": {
+      "type": "land", "ipc": 0, "owner": "usa",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["western_united_states", "sea_zone_10"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "iwo_jima": {
+      "type": "land", "ipc": 0, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_20"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "carolines": {
+      "type": "land", "ipc": 1, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_33", "sea_zone_34"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    },
+    "marshall_islands": {
+      "type": "land", "ipc": 0, "owner": "japan",
+      "is_capital": false, "is_victory_city": false,
+      "has_industrial_complex": false,
+      "adjacent_territories": ["sea_zone_31", "sea_zone_33"],
+      "zone_polygon": [[0,0],[0,0],[0,0],[0,0]]
+    }
+  },
+
+  "sea_zones": {
+    "sea_zone_6":  { "adjacent_territories": ["japan", "manchuria", "korea"], "adjacent_sea_zones": ["sea_zone_7", "sea_zone_19"] },
+    "sea_zone_7":  { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_6", "sea_zone_8", "sea_zone_19"] },
+    "sea_zone_8":  { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_7", "sea_zone_9", "sea_zone_20"] },
+    "sea_zone_9":  { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_8", "sea_zone_10", "sea_zone_25"] },
+    "sea_zone_10": { "adjacent_territories": ["western_united_states", "alaska"], "adjacent_sea_zones": ["sea_zone_9", "sea_zone_11", "sea_zone_26"] },
+    "sea_zone_11": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_10", "sea_zone_12", "sea_zone_26"] },
+    "sea_zone_19": { "adjacent_territories": ["japan", "korea"], "adjacent_sea_zones": ["sea_zone_6", "sea_zone_20", "sea_zone_35"] },
+    "sea_zone_20": { "adjacent_territories": ["kiangsu", "iwo_jima"], "adjacent_sea_zones": ["sea_zone_8", "sea_zone_19", "sea_zone_21", "sea_zone_35"] },
+    "sea_zone_21": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_20", "sea_zone_22", "sea_zone_33"] },
+    "sea_zone_22": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_21", "sea_zone_23", "sea_zone_34"] },
+    "sea_zone_23": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_22", "sea_zone_24", "sea_zone_35"] },
+    "sea_zone_24": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_23", "sea_zone_25", "sea_zone_26"] },
+    "sea_zone_25": { "adjacent_territories": ["midway", "wake_island"], "adjacent_sea_zones": ["sea_zone_9", "sea_zone_24", "sea_zone_26", "sea_zone_31"] },
+    "sea_zone_26": { "adjacent_territories": ["hawaii"], "adjacent_sea_zones": ["sea_zone_10", "sea_zone_11", "sea_zone_24", "sea_zone_25", "sea_zone_27"] },
+    "sea_zone_31": { "adjacent_territories": ["marshall_islands"], "adjacent_sea_zones": ["sea_zone_25", "sea_zone_32", "sea_zone_33", "sea_zone_54"] },
+    "sea_zone_33": { "adjacent_territories": ["carolines", "marshall_islands"], "adjacent_sea_zones": ["sea_zone_21", "sea_zone_31", "sea_zone_34"] },
+    "sea_zone_34": { "adjacent_territories": ["guam", "carolines"], "adjacent_sea_zones": ["sea_zone_22", "sea_zone_33", "sea_zone_35", "sea_zone_36"] },
+    "sea_zone_35": { "adjacent_territories": ["philippine_islands"], "adjacent_sea_zones": ["sea_zone_19", "sea_zone_23", "sea_zone_34", "sea_zone_36"] },
+    "sea_zone_36": { "adjacent_territories": ["philippine_islands", "french_indo_china_thailand"], "adjacent_sea_zones": ["sea_zone_34", "sea_zone_35", "sea_zone_37", "sea_zone_41"] },
+    "sea_zone_37": { "adjacent_territories": ["malaya", "singapore", "burma", "borneo"], "adjacent_sea_zones": ["sea_zone_36", "sea_zone_38", "sea_zone_39", "sea_zone_41"] },
+    "sea_zone_38": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_37", "sea_zone_39"] },
+    "sea_zone_39": { "adjacent_territories": ["calcutta", "india"], "adjacent_sea_zones": ["sea_zone_37", "sea_zone_38", "sea_zone_40"] },
+    "sea_zone_40": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_39"] },
+    "sea_zone_41": { "adjacent_territories": ["borneo", "dutch_east_indies"], "adjacent_sea_zones": ["sea_zone_36", "sea_zone_37", "sea_zone_42", "sea_zone_43"] },
+    "sea_zone_42": { "adjacent_territories": ["dutch_east_indies"], "adjacent_sea_zones": ["sea_zone_41", "sea_zone_43"] },
+    "sea_zone_43": { "adjacent_territories": ["dutch_east_indies", "new_guinea", "northern_territory"], "adjacent_sea_zones": ["sea_zone_41", "sea_zone_42", "sea_zone_44"] },
+    "sea_zone_44": { "adjacent_territories": ["new_guinea", "solomon_islands"], "adjacent_sea_zones": ["sea_zone_43", "sea_zone_54"] },
+    "sea_zone_54": { "adjacent_territories": ["solomon_islands", "new_south_wales", "queensland"], "adjacent_sea_zones": ["sea_zone_31", "sea_zone_44", "sea_zone_55"] },
+    "sea_zone_55": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_54"] },
+    "sea_zone_59": { "adjacent_territories": ["japan"], "adjacent_sea_zones": ["sea_zone_6", "sea_zone_60"] },
+    "sea_zone_60": { "adjacent_territories": [], "adjacent_sea_zones": ["sea_zone_59"] }
+  },
+
+  "starting_units": {
+    "japan": {
+      "japan":                    { "infantry": 8, "fighter": 3, "bomber": 1, "battleship": 1, "carrier": 2, "destroyer": 1, "submarine": 1, "transport": 1 },
+      "manchuria":                { "infantry": 4, "armor": 2, "artillery": 2 },
+      "korea":                    { "infantry": 2 },
+      "kiangsu":                  { "infantry": 3, "artillery": 1, "armor": 1 },
+      "kwangtung":                { "infantry": 2 },
+      "french_indo_china_thailand": { "infantry": 2, "artillery": 1, "armor": 1 },
+      "carolines":                { "infantry": 1 },
+      "marshall_islands":         { "infantry": 1 },
+      "iwo_jima":                 { "infantry": 1 },
+      "sea_zone_6":               { "destroyer": 1, "submarine": 1 },
+      "sea_zone_19":              { "battleship": 1, "cruiser": 1, "carrier": 1, "destroyer": 2, "transport": 2, "fighter": 1 },
+      "sea_zone_20":              { "submarine": 1 },
+      "sea_zone_33":              { "destroyer": 1 },
+      "sea_zone_36":              { "cruiser": 1, "destroyer": 1, "transport": 2 }
+    },
+    "usa": {
+      "western_united_states":    { "infantry": 4, "artillery": 1, "armor": 1, "fighter": 2, "bomber": 1 },
+      "hawaii":                   { "infantry": 2, "fighter": 2, "artillery": 1 },
+      "philippine_islands":       { "infantry": 2, "fighter": 1 },
+      "midway":                   { "infantry": 1 },
+      "wake_island":              { "infantry": 1 },
+      "guam":                     { "infantry": 1 },
+      "alaska":                   { "infantry": 1 },
+      "sea_zone_10":              { "battleship": 1, "destroyer": 1, "transport": 1 },
+      "sea_zone_26":              { "battleship": 1, "carrier": 1, "cruiser": 1, "destroyer": 2, "submarine": 2, "transport": 2, "fighter": 2 },
+      "sea_zone_35":              { "cruiser": 1, "destroyer": 1, "submarine": 1 }
+    },
+    "uk_pacific": {
+      "calcutta":                 { "infantry": 3, "fighter": 1 },
+      "singapore":                { "infantry": 3, "artillery": 1 },
+      "malaya":                   { "infantry": 1 },
+      "burma":                    { "infantry": 1 },
+      "india":                    { "infantry": 1 },
+      "sea_zone_37":              { "battleship": 1, "cruiser": 1, "destroyer": 2, "transport": 1 },
+      "sea_zone_39":              { "destroyer": 1 }
+    },
+    "anzac": {
+      "new_south_wales":          { "infantry": 3, "artillery": 1, "fighter": 1 },
+      "queensland":               { "infantry": 1 },
+      "northern_territory":       { "infantry": 1 },
+      "dutch_east_indies":        { "infantry": 2 },
+      "borneo":                   { "infantry": 1 },
+      "new_guinea":               { "infantry": 1 },
+      "solomon_islands":          { "infantry": 1 },
+      "sea_zone_54":              { "cruiser": 1, "destroyer": 1 }
+    },
+    "china": {
+      "yunnan":                   { "infantry": 2 },
+      "szechwan":                 { "infantry": 4, "fighter": 1 },
+      "shensi":                   { "infantry": 2 },
+      "suiyuyan":                 { "infantry": 2 }
+    }
+  },
+
+  "starting_ipc": {
+    "japan":      30,
+    "usa":        52,
+    "uk_pacific": 17,
+    "anzac":      10,
+    "china":       0
+  },
+
+  "canal_rules": {
+    "panama_canal": {
+      "description": "Naval units may pass between sea_zone_10 and the Atlantic only if USA controls Panama.",
+      "controlling_power": "usa",
+      "zones_connected": []
+    },
+    "suez_canal": {
+      "description": "Naval units may pass through Suez only if UK controls Egypt and Trans-Jordan.",
+      "controlling_power": "uk_pacific",
+      "zones_connected": []
+    }
+  },
+
+  "neutral_territories": ["mongolia", "tibet"],
+
+  "special_rules": {
+    "china": {
+      "no_industrial_complex": true,
+      "infantry_only_production": true,
+      "restricted_movement": true,
+      "description": "China cannot build industrial complexes. China produces infantry only (1 per 3 territories, max 6). Chinese units may only operate in China and adjacent territories."
+    }
+  }
+}
