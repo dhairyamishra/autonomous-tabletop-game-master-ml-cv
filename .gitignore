@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+.env
+*.egg-info/
+dist/
+build/
+node_modules/
+.vite/
+*.log
+.DS_Store
+Thumbs.db
+models/*.pt
+models/*.onnx

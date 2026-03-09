@@ -11,11 +11,11 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
     func,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
@@ -30,7 +30,7 @@ class GameSession(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    player_assignments: Mapped[dict] = mapped_column(JSONB, default=dict)
+    player_assignments: Mapped[dict] = mapped_column(JSON, default=dict)
     current_player: Mapped[str | None] = mapped_column(String(20), nullable=True)
     current_phase: Mapped[str | None] = mapped_column(String(30), nullable=True)
     current_round: Mapped[int] = mapped_column(Integer, default=1)
@@ -57,7 +57,7 @@ class StateSnapshot(Base):
     player: Mapped[str] = mapped_column(String(20), nullable=False)
     phase: Mapped[str] = mapped_column(String(30), nullable=False)
     round: Mapped[int] = mapped_column(Integer, nullable=False)
-    state_json: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     session: Mapped["GameSession"] = relationship(back_populates="state_snapshots")
@@ -74,7 +74,7 @@ class EventRecord(Base):
     actor: Mapped[str] = mapped_column(String(100), nullable=False)
     state_version_before: Mapped[int] = mapped_column(Integer, nullable=False)
     state_version_after: Mapped[int] = mapped_column(Integer, nullable=False)
-    event_json: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    event_json: Mapped[dict] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), index=True)
 
     session: Mapped["GameSession"] = relationship(back_populates="events")
@@ -94,7 +94,7 @@ class BattleLog(Base):
     rng_seed: Mapped[str] = mapped_column(String(64), nullable=False)
     rng_algorithm: Mapped[str] = mapped_column(String(50), nullable=False)
     battle_input_hash: Mapped[str] = mapped_column(String(64), nullable=False)
-    result_json: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    result_json: Mapped[dict] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     session: Mapped["GameSession"] = relationship(back_populates="battle_logs")

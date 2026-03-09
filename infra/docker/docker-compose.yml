@@ -1,36 +1,12 @@
-version: "3.9"
-
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: referee_db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: referee
-      POSTGRES_PASSWORD: referee
-      POSTGRES_DB: referee_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U referee -d referee_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   api:
     build:
       context: ../..
       dockerfile: infra/docker/Dockerfile.api
     container_name: referee_api
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://referee:referee@db:5432/referee_db
-      DATABASE_URL_SYNC: postgresql+psycopg2://referee:referee@db:5432/referee_db
+      DATABASE_URL: "sqlite+aiosqlite:///./referee.db"
       DEBUG: "false"
       CORS_ORIGINS: '["http://localhost:5173","http://localhost:80"]'
     ports:
@@ -50,6 +26,3 @@ services:
       - api
     ports:
       - "80:80"
-
-volumes:
-  pgdata:

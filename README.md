@@ -16,18 +16,18 @@ apps/
 modules/
   vision/       Camera calibration, unit detection, zone assignment
   reconciliation/ CV observation → proposed state delta
-  rules/        (see packages/rules-core)
-  combat/       (see packages/battle-core)
   bot/          Heuristic phase advisors
-  data/         PostgreSQL persistence wiring
 packages/
   game-schema/  Pydantic canonical models (enums, game state, events, etc.)
   rules-core/   Pure rules logic: movement, economy, phase machine, victory
   battle-core/  Pure combat logic: RNG, round resolution, simulation
 infra/
-  docker/       docker-compose.yml, Dockerfiles
+  docker/       docker-compose.yml, Dockerfiles (optional containerised deploy)
 data/
   map/          pacific_1940_2e.json — canonical map geometry
+scripts/
+  dev/          smoke_test.py, start_dev.ps1
+  migration/    init_db.py
 docs/
   product-spec/ v1-spec.md, non-goals.md
   rules/        behavioral-spec.md
@@ -35,44 +35,40 @@ docs/
 
 ---
 
-## Quick Start (Development)
+## Quick Start (Local Development)
 
 ### Prerequisites
 - Python 3.11+
 - Node.js 20+
-- Docker Desktop (for PostgreSQL)
 
-### 1. Start PostgreSQL
+No Docker required — the app uses a local SQLite database by default.
 
-```powershell
-docker compose -f infra/docker/docker-compose.yml up db -d
-```
-
-### 2. Install Python dependencies
+### 1. Install Python dependencies
 
 ```powershell
 pip install -r apps/api/requirements.txt
 ```
 
-### 3. Initialize the database
+### 2. Initialize the database
 
 ```powershell
-$env:DATABASE_URL = "postgresql+asyncpg://referee:referee@localhost:5432/referee_db"
 $env:PYTHONPATH = (Get-Location).Path
 python scripts/migration/init_db.py
 ```
 
-### 4. Start the API
+This creates `referee.db` in the repo root.
+
+### 3. Start the API
 
 ```powershell
 $env:PYTHONPATH = (Get-Location).Path
-uvicorn apps.api.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn apps.api.main:app --reload --port 8000
 ```
 
 - API: http://localhost:8000
-- Docs: http://localhost:8000/docs
+- Docs: http://localhost:8000/docs (Swagger UI with all 15 routes)
 
-### 5. Start the Frontend
+### 4. Start the Frontend
 
 ```powershell
 cd apps/web
@@ -82,15 +78,29 @@ npm run dev
 
 - Frontend: http://localhost:5173
 
-### Or: use the dev script
+### 5. Verify
 
 ```powershell
-.\scripts\dev\start_dev.ps1
+python scripts/dev/smoke_test.py
 ```
+
+Runs 33 end-to-end checks across all API endpoints.
 
 ---
 
-## Full Docker Stack
+## Switching to PostgreSQL
+
+Set the `DATABASE_URL` environment variable before starting the API:
+
+```powershell
+$env:DATABASE_URL = "postgresql+asyncpg://user:pass@localhost:5432/referee_db"
+```
+
+The `JSON` column type used by SQLAlchemy works identically on both SQLite and PostgreSQL.
+
+---
+
+## Docker Stack (Optional)
 
 ```powershell
 docker compose -f infra/docker/docker-compose.yml up --build
@@ -109,8 +119,9 @@ docker compose -f infra/docker/docker-compose.yml up --build
 | Rules engine is source of truth | All state changes validated by `packages/rules-core` |
 | Deterministic combat | RNG seed + inputs → identical replay |
 | Manual correction is first-class | Two correction types: observation correction and referee override |
-| Event sourcing | Every change backed by a typed event in PostgreSQL |
+| Event sourcing | Every change backed by a typed event in the database |
 | Modular monolith | Single FastAPI process; modules separable later |
+| Local-first development | SQLite by default, no external services needed |
 
 ---
 
@@ -118,7 +129,7 @@ docker compose -f infra/docker/docker-compose.yml up --build
 
 The "playable alpha" runs a full game manually without camera vision:
 1. Create a session via the Setup page
-2. The rules engine initializes the canonical starting state
+2. The rules engine initializes the canonical starting state (70 zones, 138 units)
 3. Use the operator console to advance phases and resolve combat
 4. The bot advisor provides ranked suggestions per phase
 5. All events are persisted and replayable
