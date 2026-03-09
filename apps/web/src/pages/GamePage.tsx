@@ -79,9 +79,9 @@ export default function GamePage() {
       fontFamily: "system-ui, -apple-system, sans-serif",
     }}>
 
-      {/* LEFT SIDEBAR — 25vw */}
+      {/* LEFT SIDEBAR — 20vw */}
       <div style={{
-        width: "25vw",
+        width: "20vw",
         height: "100vh",
         overflowY: "auto",
         borderRight: "2px solid #1a1a2e",
@@ -120,17 +120,17 @@ export default function GamePage() {
         <ZonePanel gameState={gameState} factionFilter="axis" />
       </div>
 
-      {/* CENTER — 50vw */}
+      {/* CENTER — 60vw */}
       <div style={{
-        width: "50vw",
+        width: "60vw",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}>
 
-        {/* TOP BAR — 5vh */}
-        <div style={{ height: "5vh", flexShrink: 0 }}>
+        {/* TOP BAR — 10vh */}
+        <div style={{ height: "10vh", flexShrink: 0 }}>
           <PhaseBar
             player={gameState.turn.current_player}
             phase={gameState.turn.phase}
@@ -142,13 +142,10 @@ export default function GamePage() {
           />
         </div>
 
-        {/* VIDEO FEED — 500x500 centered, no growing */}
+        {/* VIDEO FEED — flex:1 fills remaining ~75vh */}
         <div style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 8,
-          flexShrink: 0,
+          flex: 1,
+          minHeight: 0,
         }}>
           <BoardFeed
             observation={latestObservation}
@@ -157,8 +154,8 @@ export default function GamePage() {
           />
         </div>
 
-        {/* BOTTOM BAR — remaining space */}
-        <div style={{ flex: 1, minHeight: 0, overflow: "hidden", padding: "0 8px 8px" }}>
+        {/* BOTTOM BAR — 15vh */}
+        <div style={{ height: "15vh", flexShrink: 0, overflow: "hidden" }}>
           <EventLog gameId={gameState.game_id} />
         </div>
 
@@ -172,9 +169,9 @@ export default function GamePage() {
         </div>
       </div>
 
-      {/* RIGHT SIDEBAR — 25vw */}
+      {/* RIGHT SIDEBAR — 20vw */}
       <div style={{
-        width: "25vw",
+        width: "20vw",
         height: "100vh",
         overflowY: "auto",
         borderLeft: "2px solid #1a1a2e",

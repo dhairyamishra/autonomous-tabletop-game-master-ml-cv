@@ -14,11 +14,11 @@ input, select { box-sizing: border-box; }
 ::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
 
-/* Board feed wrapper — HARDCODED 500x500 */
+/* Board feed wrapper — stretches to fill parent */
 .board-feed-wrapper {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid #2a2a3e;
